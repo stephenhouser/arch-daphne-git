@@ -1,47 +1,51 @@
 #!/bin/bash
 
-SCRIPT_DIR=/usr/share/daphne/
+DAPHNE_USER=~/.daphne
+SCRIPT_DIR=/usr/share/daphne
 DAPHNE_BIN=$SCRIPT_DIR/daphne.bin
-DAPHNE_SHARE=~/.daphne
+VLDP_DIR=$DAPHNE_USER/framefile
+
+GAMES="ace astron badlands bega cliff cobra esh galaxyr gpworld interstellar lair lair2 mach3 roadblaster sdq tq uvt"
 
 function STDERR () {
 	/bin/cat - 1>&2
 }
 
-echo "Daphne Launcher : Script dir is $SCRIPT_DIR"
-cd "$SCRIPT_DIR"
+echo "Daphne Launcher : Script dir is $SCRIPT_DIR, User dir is $DAPHNE_USER"
+#cd "$DAPHNE_USER"
 
 # point to our linked libs that user may not have
-export LD_LIBRARY_PATH=$SCRIPT_DIR:$DAPHNE_SHARE:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=$SCRIPT_DIR:$DAPHNE_USER:$LD_LIBRARY_PATH
 
 if [ "$1" = "-fullscreen" ]; then
     FULLSCREEN="-fullscreen"
     shift
 fi
 
-if [ -z "$1" ] ; then
+GAME=$1
+
+if [ -z "${GAME}" ] ; then
     echo "Specify a game to try: " | STDERR
     echo
     echo "$0 [-fullscreen] <gamename>" | STDERR
 
-
-    for game in ace astron badlands bega cliff cobra esh galaxyr gpworld interstellar lair lair2 mach3 roadblaster sdq tq uvt; do
-	if ls ~/.daphne/vldp*/$game >/dev/null 2>&1; then
-	    installed="$installed $game"
+    for g in ${GAMES}; do
+	if ls ${VLDP_DIR}/${g}/${g}.txt >/dev/null 2>&1; then
+	    installed="$installed $g"
 	else
-	    uninstalled="$uninstalled $game"
+	    uninstalled="$uninstalled $g"
 	fi
     done
     if [ "$uninstalled" ]; then
 	echo
-	echo "Games not found in ~/.daphne/vldp*: " | STDERR
+	echo "Games not found in ${VLDP_DIR}: " | STDERR
 	echo "$uninstalled" | fold -s -w60 | sed 's/^ //; s/^/\t/' | STDERR
     fi
     if [ -z "$installed" ]; then
 	cat <<EOF 
 
 Error: No games installed. DVDs can be purchased from DigitalLeisure.com.
-       Please put the required files in ~/.daphne/vldp_dl/gamename/
+       Please put the required files in ${VLDP_DIR}
 EOF
     else   
 	echo
@@ -53,19 +57,30 @@ fi
 
 case "$1" in
     lair|lair2|ace|tq)
-	VLDP_DIR="vldp"
 	FASTBOOT="-fastboot"		   
 	;;
-    *) VLDP_DIR="vldp"
 esac
+
+# Set where we *think* the game frame control file should be
+GAME_FILE="${VLDP_DIR}/${GAME}/${GAME}.txt"
+if [ ! -f "${GAME_FILE}" ]; then
+	# Did not find control file where we thought it should be...
+	# Look for it as a path to the frame control file
+	if [ -f "${GAME}" ]; then
+		GAME_FILE="${GAME}"
+	else
+		echo "Game ${GAME} file ${GAME}.txt not found."
+		exit 1
+	fi
+fi
 
 #strace -o strace.txt \
 $DAPHNE_BIN $1 vldp \
   $FASTBOOT \
   $FULLSCREEN \
-  -framefile $DAPHNE_SHARE/$VLDP_DIR/$1.txt \
-  -homedir $DAPHNE_SHARE \
-  -datadir $DAPHNE_SHARE \
+  -framefile "${GAME_FILE}" \
+  -homedir "${DAPHNE_USER}" \
+  -datadir "${DAPHNE_USER}" \
   -blank_searches \
   -min_seek_delay 1000 \
   -seek_frames_per_ms 20 \
