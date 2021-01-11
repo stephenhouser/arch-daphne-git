@@ -29,7 +29,7 @@ build()
   ./configure --disable-accel-detect
   make -f Makefile.linux_x64
   cd ..
-  ln -s Makefile.vars.linux_x64 Makefile.vars
+  ln -fs Makefile.vars.linux_x64 Makefile.vars
   make
   cd ..
 }
