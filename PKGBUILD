@@ -39,7 +39,7 @@ package()
   # Install everything in /usr/share
   cd ${srcdir}/${_pkgname}
   install -Dm755 ${srcdir}/daphne.sh ${pkgdir}/usr/bin/daphne
-  install -Dm755 ${srcdir}/singe.sh ${pkgdir}/usr/bin/singe
+  #install -Dm755 ${srcdir}/singe.sh ${pkgdir}/usr/bin/singe
   install -Dm755 ${_pkgname}.bin ${pkgdir}/usr/share/${_pkgname}/${_pkgname}.bin
   install -Dm555 libvldp2.so ${pkgdir}/usr/share/${_pkgname}/libvldp2.so
   install -d ${pkgdir}/usr/share/${_pkgname}/{pics,pics/obsolete,roms/cputest,sound}
