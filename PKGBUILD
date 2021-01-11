@@ -3,7 +3,7 @@
 
 pkgname=daphne-git
 _pkgname=daphne
-pkgver=100.0e76a0d
+pkgver=134.3675284
 pkgrel=1
 pkgdesc="A command-line multiple arcade laserdisc emulator. GIT fork"
 url="http://www.daphne-emu.com/"
@@ -40,7 +40,8 @@ package()
   cd ${srcdir}/${_pkgname}
   install -Dm755 ${srcdir}/daphne.sh ${pkgdir}/usr/bin/daphne
   install -Dm755 ${srcdir}/singe.sh ${pkgdir}/usr/bin/singe
-  install -Dm755 ${_pkgname}.bin ${pkgdir}/usr/share/${_pkgname}/${_pkgname}
+  install -Dm755 ${_pkgname}.bin ${pkgdir}/usr/share/${_pkgname}/${_pkgname}.bin
+  install -Dm555 libvldp2.so ${pkgdir}/usr/share/${_pkgname}/libvldp2.so
   install -d ${pkgdir}/usr/share/${_pkgname}/{pics,pics/obsolete,roms/cputest,sound}
   install -m644 pics/*.* ${pkgdir}/usr/share/${_pkgname}/pics/
   install -m644 pics/obsolete/*.* ${pkgdir}/usr/share/${_pkgname}/pics/obsolete/
