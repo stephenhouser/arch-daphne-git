@@ -13,7 +13,7 @@ depends=('glew' 'sdl_mixer' 'zlib' 'gcc-libs' 'libxmu')
 makedepends=('git')
 provides=('daphne')
 conflicts=('daphne')
-source=('git://github.com/DavidGriffith/daphne.git' 'daphne.sh' 'singe.sh')
+source=('https://github.com/DavidGriffith/daphne.git' 'daphne.sh' 'singe.sh')
 sha256sums=('SKIP' 'SKIP' 'SKIP')
 
 pkgver()
